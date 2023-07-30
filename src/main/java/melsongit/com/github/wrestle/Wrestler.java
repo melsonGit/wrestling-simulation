@@ -12,8 +12,7 @@ public class Wrestler {
     int weightClass;
     int weight;
 
-    Wrestler(int weightClass, int weight, int id, int abilityScore)
-    {
+    public Wrestler(int weightClass, int weight, int id, int abilityScore) {
         this.weightClass = weightClass;
         this.weight = weight;
         this.id = id;
