@@ -1,15 +1,13 @@
 package melsongit.com.github.wrestle;
 
-import lombok.NoArgsConstructor;
 import melsongit.com.github.wrestle.utils.FightRecord;
 
-@NoArgsConstructor
 public class Wrestler {
 
-    int id;
+    public int id;
     int abilityScore;
-    FightRecord fightRecord;
-    int weightClass;
+    public FightRecord fightRecord = new FightRecord();
+    public int weightClass;
     int weight;
 
     public Wrestler(int weightClass, int weight, int id, int abilityScore) {
@@ -19,4 +17,17 @@ public class Wrestler {
         this.abilityScore = abilityScore;
     }
 
+    public FightRecord getFightRecord() {
+        return fightRecord;
+    }
+
+    public int getAbilityScore() {
+        return abilityScore;
+    }
+    public int getWeightClass() {
+        return weightClass;
+    }
+    public int getId() {
+        return id;
+    }
 }

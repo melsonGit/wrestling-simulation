@@ -1,14 +1,18 @@
 package melsongit.com.github.wrestle;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.*;
+
+import static java.lang.Math.max;
+
+@Getter
+@Setter
 public class School {
 
-    int name;
-    int numberOfWrestlers;
+    private final int name;
+    private final int numberOfWrestlers;
     List<Wrestler> wrestlers;
 
     public School(int Name, int numWrs) {
@@ -17,8 +21,8 @@ public class School {
         numberOfWrestlers = numWrs;
         wrestlers = new ArrayList<>(numberOfWrestlers);
 
-        Set<Integer> wtClasses;
-        double random = Math.random() * 49 + 1; // replace e2 with this
+        Set<Integer> wtClasses = new HashSet<>();
+        int random = (int) (Math.random() * 49 + 1); // replace e2 with this
 
         for (int i = 0; i < numberOfWrestlers; ++i) {
 
@@ -36,29 +40,29 @@ public class School {
                 }
             }
 
-            int abilityScore = max(static_cast<int>(round<int>(distributionAbility(e2))), 0);
-            wrestlers[i] = Wrestler(cl, wt, name + i + 1, abilityScore);
-            wtClasses.insert(cl);
+            int abilityScore = max(random, 0);
+            wrestlers.add(new Wrestler(cl, wt, name + i + 1, abilityScore));
+            wtClasses.add(cl);
         }
     }
 
     public int getWrestler(int wtClass) {
         for (int i = 0; i < numberOfWrestlers; ++i)
-            if (wrestlers[i].wtClass == wtClass)
+            if (wrestlers.get(i).weightClass == wtClass)
                 return i;
         return -1;
     }
 
     public float totalSchoolScore() {
         int wins = 0;
-        int loses = 0;
+        int losses = 0;
 
         for (int i = 0; i < numberOfWrestlers; ++i) {
-            wins += wrestlers[i].record.wins;
-            loses += wrestlers[i].record.loses;
+            wins += wrestlers.get(i).fightRecord.getWins();
+            losses += wrestlers.get(i).fightRecord.getLosses();
         }
 
-        return float(wins) / (wins + loses);
+        return (float) wins / (wins + losses);
     }
 
     public static class WeightClasses {

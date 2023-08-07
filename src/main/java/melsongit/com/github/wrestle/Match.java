@@ -1,5 +1,7 @@
 package melsongit.com.github.wrestle;
 
+import java.util.Random;
+
 public class Match {
 
     Wrestler w1;
@@ -12,16 +14,12 @@ public class Match {
         w1 = wr1;
         w2 = wr2;
 
-        float sigma = max(abs(w1.abilityScore - w2.abilityScore) / 3.f, 15.f);
+        float sigma = Math.max(Math.abs(w1.abilityScore - w2.abilityScore) / 3.f, 15.f);
 
-        std::random_device rd;
+        Random rd = new Random();
+        float score1 = (float) (rd.nextGaussian() * sigma + w1.abilityScore);
+        float score2 = (float) (rd.nextGaussian() * sigma + w2.abilityScore);
 
-        std::mt19937 e2(rd());
-
-        std::normal_distribution<double> distribution1(w1.abilityScore, sigma);
-        std::normal_distribution<double> distribution2(w2.abilityScore, sigma);
-        float score1 = distribution1(e2);
-        float score2 = distribution2(e2);
         if (score1 > score2) {
             winner = w1;
             loser = w2;

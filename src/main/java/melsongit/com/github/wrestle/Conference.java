@@ -1,18 +1,14 @@
 package melsongit.com.github.wrestle;
 
-import umontreal.ssj.rng.MT19937;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Conference {
 
     List<School> schools = new ArrayList<>();
-    float bestScore;
-    int[][][] advantageMatrix = new int[13][8][8];
-
-    // Implement a better random no. generate once MVP achieved
-    //MT19937 mt19937;
+    private float bestScore;
+    public int[][][] advantageMatrix = new int[13][8][8];
 
     public Conference() {
 
@@ -21,14 +17,8 @@ public class Conference {
         for (int schoolName = 100; schoolName < 900; schoolName += 100) {
 
             int numberOfWrestlers = 12;
-            schools.add(School(schoolName, numberOfWrestlers));
+            schools.add(new School(schoolName, numberOfWrestlers));
         }
-
-        for (int i = 0; i < 12; ++i)
-            for (int j = 0; j < 8; ++j)
-                for (int k = 0; k < 8; ++k)
-                    advantageMatrix[i][j][k] = 0;
-
     }
 
     public void simulateSeason() {
@@ -37,13 +27,68 @@ public class Conference {
                 schoolsMatch(i, j);
     }
 
+    public void schoolsMatch(int school1, int school2) {
+        for (int i = 1; i < 13; ++i) {
+            int wrestler1 = 100 * (school1 + 1) + schools.get(school1).getWrestler(i) + 1;
+            int wrestler2 = 100 * (school2 + 1) + schools.get(school2).getWrestler(i) + 1;
+            wrestlersMatch(wrestler1, wrestler2);
+        }
+    }
+
+    public void wrestlersMatch(int wrestler1, int wrestler2)
+    {
+        if (wrestler1 % 100 < 1 || wrestler2 % 100 < 1)
+            return;
+
+        Wrestler w1 = schools.get(wrestler1 / 100 - 1).wrestlers.get(wrestler1 % 100 - 1);
+        Wrestler w2 = schools.get(wrestler2 / 100 - 1).wrestlers.get(wrestler2 % 100 - 1);
+
+        float sigma = Math.max(Math.abs(w1.getAbilityScore() - w2.getAbilityScore()) / 3.f, 15.f);
+
+        Random rd = new Random();
+        float score1 = (float) (rd.nextGaussian() * sigma + w1.getAbilityScore());
+        float score2 = (float) (rd.nextGaussian() * sigma + w2.getAbilityScore());
+
+        if (score1 > score2)
+        {
+            if (w1.getFightRecord().getWins() == 0)
+                w1.getFightRecord().setWins(1);
+            else
+                w1.getFightRecord().setWins(w1.getFightRecord().getWins() + 1);
+
+            if (w2.getFightRecord().getLosses() == 0)
+                w2.getFightRecord().setLosses(1);
+            else
+                w2.getFightRecord().setLosses(w2.getFightRecord().getLosses() + 1);
+
+            advantageMatrix[w1.getWeightClass()][wrestler1 / 100 - 1][wrestler2 / 100 - 1]++;
+            advantageMatrix[w1.getWeightClass()][wrestler2 / 100 - 1][wrestler1 / 100 - 1]--;
+        }
+        else
+        {
+
+            if (w1.getFightRecord().getLosses() == 0)
+                w1.getFightRecord().setLosses(1);
+            else
+                w1.getFightRecord().setLosses(w1.getFightRecord().getLosses() + 1);
+
+            if (w2.getFightRecord().getWins() == 0)
+                w2.getFightRecord().setWins(1);
+            else
+                w2.getFightRecord().setWins(w2.getFightRecord().getWins() + 1);
+
+            advantageMatrix[w1.getWeightClass()][wrestler1 / 100 - 1][wrestler2 / 100 - 1]--;
+            advantageMatrix[w1.getWeightClass()][wrestler2 / 100 - 1][wrestler1 / 100 - 1]++;
+        }
+    }
+
     public int bestSchool() {
         int bestSchool = -1;
         for (int i = 0; i < 8; ++i)
         {
-            if (schools[i].totalSchoolScore() > bestScore)
+            if (schools.get(i).totalSchoolScore() > bestScore)
             {
-                bestScore = schools[i].totalSchoolScore();
+                bestScore = schools.get(i).totalSchoolScore();
                 bestSchool = (i + 1) * 100;
             }
         }
@@ -51,48 +96,8 @@ public class Conference {
         return bestSchool;
     }
 
-    public int wrestlersMatch(int wrestler1, int wrestler2)
-    {
-        if (wrestler1 % 100 < 1 || wrestler2 % 100 < 1)
-            return 0;
-        Wrestler w1 = schools[wrestler1 / 100 - 1].wrestlers[wrestler1 % 100 - 1];
-        Wrestler w2 = schools[wrestler2 / 100 - 1].wrestlers[wrestler2 % 100 - 1];
-
-        float sigma = max(abs(w1.abilityScore - w2.abilityScore) / 3.f, 15.f);
-
-        std::random_device rd;
-
-        std::mt19937 e2(rd());
-
-        std::normal_distribution<double> distribution1(w1.abilityScore, sigma);
-        std::normal_distribution<double> distribution2(w2.abilityScore, sigma);
-        float score1 = distribution1(e2);
-        float score2 = distribution2(e2);
-
-        if (score1 > score2)
-        {
-            w1.record.wins++;
-            w2.record.loses++;
-            advantageMatrix[w1.wtClass][wrestler1 / 100 - 1][wrestler2 / 100 - 1]++;
-            advantageMatrix[w1.wtClass][wrestler2 / 100 - 1][wrestler1 / 100 - 1]--;
-            return 1;
-        }
-        else
-        {
-            w1.record.loses++;
-            w2.record.wins++;
-            advantageMatrix[w1.wtClass][wrestler1 / 100 - 1][wrestler2 / 100 - 1]--;
-            advantageMatrix[w1.wtClass][wrestler2 / 100 - 1][wrestler1 / 100 - 1]++;
-            return -1;
-        }
-    }
-
-    public void schoolsMatch(int school1, int school2) {
-        for (int i = 1; i < 13; ++i) {
-            int w1 = 100 * (school1 + 1) + schools[school1].getWrestler(i) + 1;
-            int w2 = 100 * (school2 + 1) + schools[school2].getWrestler(i) + 1;
-            wrestlersMatch(w1, w2);
-        }
+    public float getBestScore() {
+        return bestScore;
     }
 }
 
