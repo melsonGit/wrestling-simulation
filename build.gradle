@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'ca.umontreal.iro.simul', name: 'ssj', version: '3.3.2'
+    testImplementation "junit:junit:4.13.2"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.7.0"
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.28'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
