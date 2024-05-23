@@ -19,7 +19,7 @@ public class Tournament {
         conf = conference;
         wtClass = weightClass;
 
-        for (int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 7; ++i) {
             int id = conf.schools.get(i).getWrestler(weightClass);
             if (id > -1)
                 participants.add(conf.schools.get(i).wrestlers.get(id % 100));
@@ -33,7 +33,7 @@ public class Tournament {
     }
 
     public void simulate() {
-        matches.add(new Match(participants.get(0), participants.get(7)));
+        matches.add(new Match(participants.get(0), participants.get(6)));
         matches.add(new Match(participants.get(4), participants.get(3)));
         matches.add(new Match(participants.get(2), participants.get(5)));
         matches.add(new Match(participants.get(1), participants.get(6)));

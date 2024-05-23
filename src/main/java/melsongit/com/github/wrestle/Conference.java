@@ -14,7 +14,7 @@ public class Conference {
 
         double random = Math.random() * 49 + 1;
 
-        for (int schoolName = 100; schoolName < 900; schoolName += 100) {
+        for (int schoolName = 100; schoolName < 800; schoolName += 100) {
 
             int numberOfWrestlers = 12;
             schools.add(new School(schoolName, numberOfWrestlers));
@@ -22,8 +22,8 @@ public class Conference {
     }
 
     public void simulateSeason() {
-        for (int i = 0; i < 8; ++i)
-            for (int j = i + 1; j < 8; ++j)
+        for (int i = 0; i < 7; ++i)
+            for (int j = i + 1; j < 7; ++j)
                 schoolsMatch(i, j);
     }
 
@@ -84,7 +84,7 @@ public class Conference {
 
     public int bestSchool() {
         int bestSchool = -1;
-        for (int i = 0; i < 8; ++i)
+        for (int i = 0; i < 7; ++i)
         {
             if (schools.get(i).totalSchoolScore() > bestScore)
             {
